@@ -12,8 +12,8 @@ type ListService struct {
 }
 
 // newListService returns a new ListService.
-func newListService(sling *sling.Sling) *SearchService {
-	return &SearchService{
+func newListService(sling *sling.Sling) *ListService {
+	return &ListService{
 		sling: sling.Path("lists/"),
 	}
 }
@@ -32,9 +32,9 @@ type ListStatusesParams struct {
 
 // Tweets returns a collection of Tweets matching a search query.
 // https://dev.twitter.com/rest/reference/get/search/tweets
-func (s *SearchService) Statuses(params *ListStatusesParams) ([]Tweet, *http.Response, error) {
-	tweets := new([]Tweet)
+func (s *ListService) Statuses(params *ListStatusesParams) ([]Tweet, *http.Response, error) {
+	var tweets []Tweet
 	apiError := new(APIError)
-	resp, err := s.sling.New().Get("statuses.json").QueryStruct(params).Receive(tweets, apiError)
+	resp, err := s.sling.New().Get("statuses.json").QueryStruct(params).Receive(&tweets, apiError)
 	return tweets, resp, relevantError(err, *apiError)
 }
